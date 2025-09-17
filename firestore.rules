@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Coleção de pedidos
+    match /pedidos/{pedidoId} {
+      // Qualquer usuário (mesmo não autenticado) pode criar um pedido
+      allow create: if true;
+
+      // Leitura pública: necessária para a página index.html consultar por número/colaborador
+      allow read: if true;
+
+      // Apenas administradores podem atualizar ou apagar pedidos
+      allow update, delete: if isAdmin();
+    }
+
+    // Coleção de usuários (dados de perfil/roles)
+    match /usuarios/{userId} {
+      // Usuário autenticado pode ler seu próprio documento para preencher UI
+      allow read: if isSignedIn() && request.auth.uid == userId;
+
+      // Edição de roles deve ser feita por administradores via backend seguro (não pelo cliente)
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Negar qualquer outra operação por padrão
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
