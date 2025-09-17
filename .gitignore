@@ -1,0 +1,10 @@
+# Ignore secrets and local configs
+config.js
+.env
+.env.local
+*.local
+node_modules/
+dist/
+build/
+.DS_Store
+Thumbs.db

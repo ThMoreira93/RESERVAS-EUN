@@ -881,16 +881,13 @@
 </div>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="config.js"></script>
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCcAKzyiCnuTAke9_Emf6omH6qrjCp99YI",
-  authDomain: "reservas-eun.firebaseapp.com",
-  projectId: "reservas-eun",
-  storageBucket: "reservas-eun.firebasestorage.app",
-  messagingSenderId: "532255616856",
-  appId: "1:532255616856:web:02de05202653e31022bf2d"
-    };
-    firebase.initializeApp(firebaseConfig);
+    if (!window.firebaseConfig) {
+      console.error('config.js não carregado: defina window.firebaseConfig.');
+      alert('Configuração do Firebase ausente. Verifique o arquivo config.js.');
+    }
+    firebase.initializeApp(window.firebaseConfig);
     const db = firebase.firestore();
 
     const STATUS_OPTIONS = [
